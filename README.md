@@ -1,2 +1,2 @@
 # My website
-[Ashutosh Mohanty](ashut0sh.me)
+[Ashutosh Mohanty](http://ashut0sh.me)
