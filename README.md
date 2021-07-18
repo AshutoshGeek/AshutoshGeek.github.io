@@ -1,2 +1,2 @@
-# My website
-[Ashutosh Mohanty](http://ashut0sh.me)
+# My Blog
+##[*https://ashutoshgeek.github.io*](https://ashutoshgeek.github.io)
