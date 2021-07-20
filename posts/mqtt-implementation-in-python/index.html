@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        IoT using MQTT in Python and dashboard UI using Node-Red | NVIDIA Jetson Nano ::
+        Ashutosh Mohanty
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Prerequisites  NVIDIA Jetson Nano or RASPBERRY PI (with Wi-Fi Adapter) Solderless breadboard 220 Ohm Resistor 0.5Watt LEDs  Hardware Connections The NVIDIA Jetson Nano has 40 general purpose input/output pins (GPIO). We will be using Pin 7 and ground as output to the led.
+ On the breadboard connect the 220 Ohm resistor to the positive pin of the LED. Connect the other end of the resistor to the GPIO pin 7 through a Jumper wire of the Jeston Nano."
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/posts/mqtt-implementation-in-python/" />
+
+
+
+
+
+<link rel="stylesheet" href="/assets/style.css" />
+
+<link rel="stylesheet" href="/style.css" />
+
+
+<link
+  rel="apple-touch-icon-precomposed"
+  sizes="144x144"
+  href="/img/apple-touch-icon-144-precomposed.png"
+/>
+<link rel="shortcut icon" href="/img/favicon.png" />
+
+
+<link href="/assets/fonts/Inter-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/assets/fonts/Inter-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/assets/fonts/Inter-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/assets/fonts/Inter-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/assets/fonts/Inter-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="/assets/fonts/Inter-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IoT using MQTT in Python and dashboard UI using Node-Red | NVIDIA Jetson Nano"/>
+<meta name="twitter:description" content="Prerequisites  NVIDIA Jetson Nano or RASPBERRY PI (with Wi-Fi Adapter) Solderless breadboard 220 Ohm Resistor 0.5Watt LEDs  Hardware Connections The NVIDIA Jetson Nano has 40 general purpose input/output pins (GPIO). We will be using Pin 7 and ground as output to the led.
+ On the breadboard connect the 220 Ohm resistor to the positive pin of the LED. Connect the other end of the resistor to the GPIO pin 7 through a Jumper wire of the Jeston Nano."/>
+
+
+
+<meta property="og:title" content="IoT using MQTT in Python and dashboard UI using Node-Red | NVIDIA Jetson Nano" />
+<meta property="og:description" content="Prerequisites  NVIDIA Jetson Nano or RASPBERRY PI (with Wi-Fi Adapter) Solderless breadboard 220 Ohm Resistor 0.5Watt LEDs  Hardware Connections The NVIDIA Jetson Nano has 40 general purpose input/output pins (GPIO). We will be using Pin 7 and ground as output to the led.
+ On the breadboard connect the 220 Ohm resistor to the positive pin of the LED. Connect the other end of the resistor to the GPIO pin 7 through a Jumper wire of the Jeston Nano." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/mqtt-implementation-in-python/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-20T13:14:28+05:30" />
+<meta property="article:modified_time" content="2021-07-20T13:14:28+05:30" /><meta property="og:site_name" content="Ashutosh Mohanty" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >hello friend</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/posts">Posts</a></li>
+        
+      
+        
+          <li><a href="/showcase">Showcase</a></li>
+        
+      
+      
+      
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/posts">Posts</a></li>
+      
+    
+      
+        <li><a href="/showcase">Showcase</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title">IoT using MQTT in Python and dashboard UI using Node-Red | NVIDIA Jetson Nano</h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2021-07-20
+        </span>
+
+        
+          
+        
+      
+
+      
+        <span class="post-author"
+          >— Written by Ashutosh Mohanty</span
+        >
+
+
+      
+    </div>
+
+    
+
+    
+
+    <div class="post-content">
+      
+      <h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>NVIDIA Jetson Nano or RASPBERRY PI (with Wi-Fi Adapter)</li>
+<li>Solderless breadboard</li>
+<li>220 Ohm Resistor 0.5Watt</li>
+<li>LEDs</li>
+</ul>
+<h2 id="hardware-connections">Hardware Connections</h2>
+<p>The NVIDIA Jetson Nano has 40  general purpose input/output pins (GPIO).
+We will be using Pin 7 and ground as output to the led.</p>
+<ul>
+<li>On the breadboard connect the 220 Ohm resistor to the positive pin of the LED.</li>
+<li>Connect the other end of the resistor to the GPIO pin 7 through a Jumper wire of the Jeston Nano.</li>
+<li>Connect the negative pin of the LED to the GND pin through a Jumper wire.</li>
+</ul>
+<h2 id="seting-up-the-python-libraries">Seting Up the Python Libraries</h2>
+<p>Install <a href="https://github.com/eclipse/paho.mqtt.python">paho-mqtt</a><br>
+<code>sudo pip3 install paho-mqtt</code></p>
+<h3 id="the-code">The Code</h3>
+<p>Create a file named mqtt_gpio.py<br>
+<code>gedit mqtt_gpio.py</code><br>
+write the code given below and save it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+<span style="color:#75715e"># Author: Ashutosh Mohanty</span>
+<span style="color:#75715e"># Date created: 19/07/2021</span>
+
+<span style="color:#f92672">import</span> RPi.GPIO <span style="color:#66d9ef">as</span> GPIO
+<span style="color:#f92672">import</span> paho.mqtt.client <span style="color:#66d9ef">as</span> mqtt
+<span style="color:#f92672">import</span> paho.mqtt.subscribe <span style="color:#66d9ef">as</span> subscribe
+<span style="color:#f92672">import</span> time
+
+print(<span style="color:#e6db74">&#34;Starting now! Press CTRL+C to exit&#34;</span>)
+GPIO<span style="color:#f92672">.</span>setwarnings(<span style="color:#66d9ef">False</span>)
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_msg</span>(client, userdata, message):
+    <span style="color:#75715e"># Pin Definitions</span>
+    output_pin <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span> 
+    <span style="color:#75715e"># Pin Setup:</span>
+    <span style="color:#75715e"># GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi</span>
+    GPIO<span style="color:#f92672">.</span>setmode(GPIO<span style="color:#f92672">.</span>BOARD)
+    <span style="color:#75715e"># set pin as an output pin with optional initial state of HIGH</span>
+    GPIO<span style="color:#f92672">.</span>setup(output_pin, GPIO<span style="color:#f92672">.</span>OUT, initial<span style="color:#f92672">=</span>GPIO<span style="color:#f92672">.</span>HIGH)
+
+    message_topic <span style="color:#f92672">=</span> message<span style="color:#f92672">.</span>topic
+    message_payload <span style="color:#f92672">=</span> message<span style="color:#f92672">.</span>payload
+    message_payload <span style="color:#f92672">=</span> message_payload<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)
+    print(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%s</span><span style="color:#e6db74"> : </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> (message<span style="color:#f92672">.</span>topic, message<span style="color:#f92672">.</span>payload))
+
+    <span style="color:#66d9ef">if</span> message_payload <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;1&#39;</span>:
+        print(<span style="color:#e6db74">&#34;Outputting </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> to pin </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>format(GPIO<span style="color:#f92672">.</span>HIGH, output_pin))
+        GPIO<span style="color:#f92672">.</span>output(output_pin, GPIO<span style="color:#f92672">.</span>HIGH)
+        print(<span style="color:#e6db74">&#34;Light 1 turned ON&#34;</span>)
+    <span style="color:#66d9ef">elif</span> message_payload <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;0&#39;</span>:
+        print(<span style="color:#e6db74">&#34;Outputting </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> to pin </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>format(GPIO<span style="color:#f92672">.</span>LOW, output_pin))
+        GPIO<span style="color:#f92672">.</span>output(output_pin, GPIO<span style="color:#f92672">.</span>LOW)
+        print(<span style="color:#e6db74">&#34;Light 1 turned OFF&#34;</span>)
+    print(<span style="color:#e6db74">&#34;======================&#34;</span>)
+subscribe<span style="color:#f92672">.</span>callback(print_msg, <span style="color:#e6db74">&#34;sensors/light1&#34;</span>, hostname<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;mqtt.eclipseprojects.io&#34;</span>)
+
+</code></pre></div><h2 id="iot-dashboard-ui-in-node-red">Iot Dashboard UI in Node-RED</h2>
+<p>Install Node-RED either on your local device or on cloud.
+we will be using the node-red dashboard to controll the led.</p>
+<h3 id="installation">Installation</h3>
+<ul>
+<li>
+<p>Install Node.js <a href="https://nodejs.org/en/download/package-manager">https://nodejs.org/en/download/package-manager</a></p>
+</li>
+<li>
+<p>Install Node-RED <a href="https://nodered.org/docs/getting-started/local">https://nodered.org/docs/getting-started/local</a></p>
+</li>
+<li>
+<p>Install node-red-dashboard <a href="https://flows.nodered.org/node/node-red-dashboard">https://flows.nodered.org/node/node-red-dashboard</a></p>
+</li>
+</ul>
+<h3 id="deploying">Deploying</h3>
+<p>Start node-red from command line and open the web interface in your browser.<br>
+You can create a flow or export the flow i have created from my <a href="https://github.com/AshutoshGeek/MQTT-Python-Jetson-Nano/blob/main/node-red-flows.json">Github</a></p>
+<p>Deploy the flow and go to <a href="http://127.0.0.1:1880/ui">Web UI</a></p>
+<h2 id="running-the-code">Running the code</h2>
+<p>Now run the mqtt_gpio.py<br>
+<code>python3 mqtt_gpio.py</code></p>
+<p>Now You can ON OFF the LED from the Web dashboard.</p>
+<h2 id="source-code-and-node-red-flows">Source code and Node Red Flows</h2>
+<p><a href="https://github.com/AshutoshGeek/MQTT-Python-Jetson-Nano">https://github.com/AshutoshGeek/MQTT-Python-Jetson-Nano</a></p>
+
+    </div>
+    
+
+    
+      
+    
+  </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >hello friend</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      
+    
+  </div>
+</footer>
+
+<script src="/assets/main.js"></script>
+<script src="/assets/prism.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>
