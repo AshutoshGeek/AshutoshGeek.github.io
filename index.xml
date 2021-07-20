@@ -15,7 +15,7 @@
     
     
     <item>
-      <title>IoT using MQTT in Python and dashboard UI using Node-Red | NVIDIA Jetson Nano</title>
+      <title>Getting started with IoT using MQTT in Python, Node-Red and Jetson Nano or Raspberry Pi </title>
       <link>/posts/mqtt-implementation-in-python/</link>
       <pubDate>Tue, 20 Jul 2021 13:14:28 +0530</pubDate>
       
@@ -28,15 +28,14 @@
         
         
         
-          Prerequisites  NVIDIA Jetson Nano or RASPBERRY PI (with Wi-Fi Adapter) Solderless breadboard 220 Ohm Resistor 0.5Watt LEDs  Hardware Connections The NVIDIA Jetson Nano has 40 general purpose input/output pins (GPIO). We will be using Pin 7 and ground as output to the led.
- On the breadboard connect the 220 Ohm resistor to the positive pin of the LED. Connect the other end of the resistor to the GPIO pin 7 through a Jumper wire of the Jeston Nano.
+          A Python program which subscribes to a topic of a MQTT broker and outputs to GPIO pinout of Jetson Nano or Raspberry.
           
         
         </description>
     </item>
     
     <item>
-      <title>About</title>
+      <title>About me</title>
       <link>/about/</link>
       <pubDate>Sun, 18 Jul 2021 00:00:00 +0000</pubDate>
       
@@ -50,7 +49,7 @@
         
         
           Hi there My name is Ashutosh Mohanty and I am a cybersecurity enthusiast.
- Linkedin: Ashutosh Mohanty TryHackMe: modedlife Github: AshutoshGeek Twitter: @ashu_ishere  
+Contact  Linkedin: Ashutosh Mohanty TryHackMe: modedlife Github: AshutoshGeek Twitter: @ashu_ishere Email: ashuonly@protonmail.com  
           
         
         </description>

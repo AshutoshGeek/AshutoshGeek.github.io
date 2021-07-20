@@ -3,7 +3,7 @@
   <head>
     
       <title>
-        IoT using MQTT in Python and dashboard UI using Node-Red | NVIDIA Jetson Nano ::
+        Getting started with IoT using MQTT in Python, Node-Red and Jetson Nano or Raspberry Pi  ::
         Ashutosh Mohanty
       </title>
     
@@ -47,15 +47,13 @@
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="IoT using MQTT in Python and dashboard UI using Node-Red | NVIDIA Jetson Nano"/>
-<meta name="twitter:description" content="Prerequisites  NVIDIA Jetson Nano or RASPBERRY PI (with Wi-Fi Adapter) Solderless breadboard 220 Ohm Resistor 0.5Watt LEDs  Hardware Connections The NVIDIA Jetson Nano has 40 general purpose input/output pins (GPIO). We will be using Pin 7 and ground as output to the led.
- On the breadboard connect the 220 Ohm resistor to the positive pin of the LED. Connect the other end of the resistor to the GPIO pin 7 through a Jumper wire of the Jeston Nano."/>
+<meta name="twitter:title" content="Getting started with IoT using MQTT in Python, Node-Red and Jetson Nano or Raspberry Pi "/>
+<meta name="twitter:description" content="A Python program which subscribes to a topic of a MQTT broker and outputs to GPIO pinout of Jetson Nano or Raspberry."/>
 
 
 
-<meta property="og:title" content="IoT using MQTT in Python and dashboard UI using Node-Red | NVIDIA Jetson Nano" />
-<meta property="og:description" content="Prerequisites  NVIDIA Jetson Nano or RASPBERRY PI (with Wi-Fi Adapter) Solderless breadboard 220 Ohm Resistor 0.5Watt LEDs  Hardware Connections The NVIDIA Jetson Nano has 40 general purpose input/output pins (GPIO). We will be using Pin 7 and ground as output to the led.
- On the breadboard connect the 220 Ohm resistor to the positive pin of the LED. Connect the other end of the resistor to the GPIO pin 7 through a Jumper wire of the Jeston Nano." />
+<meta property="og:title" content="Getting started with IoT using MQTT in Python, Node-Red and Jetson Nano or Raspberry Pi " />
+<meta property="og:description" content="A Python program which subscribes to a topic of a MQTT broker and outputs to GPIO pinout of Jetson Nano or Raspberry." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/posts/mqtt-implementation-in-python/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-07-20T13:14:28+05:30" />
@@ -83,7 +81,7 @@
 </svg>
 </span>
     <span class="logo__text"
-      >hello friend</span
+      >/bin/bash</span
     >
     <span class="logo__cursor"></span>
   
@@ -155,7 +153,7 @@
   
 
   <div class="post">
-    <h1 class="post-title">IoT using MQTT in Python and dashboard UI using Node-Red | NVIDIA Jetson Nano</h1>
+    <h1 class="post-title">Getting started with IoT using MQTT in Python, Node-Red and Jetson Nano or Raspberry Pi</h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -197,7 +195,7 @@ We will be using Pin 7 and ground as output to the led.</p>
 <li>Connect the other end of the resistor to the GPIO pin 7 through a Jumper wire of the Jeston Nano.</li>
 <li>Connect the negative pin of the LED to the GND pin through a Jumper wire.</li>
 </ul>
-<h2 id="seting-up-the-python-libraries">Seting Up the Python Libraries</h2>
+<h2 id="setting-up-the-python-libraries">Setting Up the Python Libraries</h2>
 <p>Install <a href="https://github.com/eclipse/paho.mqtt.python">paho-mqtt</a><br>
 <code>sudo pip3 install paho-mqtt</code></p>
 <h3 id="the-code">The Code</h3>
@@ -220,8 +218,8 @@ GPIO<span style="color:#f92672">.</span>setwarnings(<span style="color:#66d9ef">
     <span style="color:#75715e"># Pin Definitions</span>
     output_pin <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span> 
     <span style="color:#75715e"># Pin Setup:</span>
-    <span style="color:#75715e"># GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi</span>
-    GPIO<span style="color:#f92672">.</span>setmode(GPIO<span style="color:#f92672">.</span>BOARD)
+    <span style="color:#75715e"># GPIO.setmode(GPIO.BCM)  # For Raspberry Pi</span>
+    GPIO<span style="color:#f92672">.</span>setmode(GPIO<span style="color:#f92672">.</span>BOARD)  <span style="color:#75715e"># For Jetson Nano</span>
     <span style="color:#75715e"># set pin as an output pin with optional initial state of HIGH</span>
     GPIO<span style="color:#f92672">.</span>setup(output_pin, GPIO<span style="color:#f92672">.</span>OUT, initial<span style="color:#f92672">=</span>GPIO<span style="color:#f92672">.</span>HIGH)
 
@@ -241,7 +239,13 @@ GPIO<span style="color:#f92672">.</span>setwarnings(<span style="color:#66d9ef">
     print(<span style="color:#e6db74">&#34;======================&#34;</span>)
 subscribe<span style="color:#f92672">.</span>callback(print_msg, <span style="color:#e6db74">&#34;sensors/light1&#34;</span>, hostname<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;mqtt.eclipseprojects.io&#34;</span>)
 
-</code></pre></div><h2 id="iot-dashboard-ui-in-node-red">Iot Dashboard UI in Node-RED</h2>
+</code></pre></div><p>In the last line of code the MQTT topic and hostname of the broker is declared.
+I have used the MQTT server hosted by <a href="https://iot.eclipse.org/projects/sandboxes/">Eclipse Foundation</a>. You can use your self hosted MQTT server too.</p>
+<p>I have used <code>sensors/light1</code> as the MQTT topic. The python script is subscribing to the topic and checking the message payload.</p>
+<p>If message_payload is 1 it turns ON the light by outputting GPIO.HIGH in output_pin (Pin 7).<br>
+If message_payload is 0 it turns OFF the light by outputting GPIO.LOW in output_pin (Pin 7).</p>
+<p>Check the manual page on how to use topic properly <a href="https://mosquitto.org/man/mqtt-7.html">https://mosquitto.org/man/mqtt-7.html</a></p>
+<h2 id="iot-dashboard-ui-in-node-red">Iot Dashboard UI in Node-RED</h2>
 <p>Install Node-RED either on your local device or on cloud.
 we will be using the node-red dashboard to controll the led.</p>
 <h3 id="installation">Installation</h3>
@@ -258,20 +262,27 @@ we will be using the node-red dashboard to controll the led.</p>
 </ul>
 <h3 id="deploying">Deploying</h3>
 <p>Start node-red from command line and open the web interface in your browser.<br>
-You can create a flow or export the flow i have created from my <a href="https://github.com/AshutoshGeek/MQTT-Python-Jetson-Nano/blob/main/node-red-flows.json">Github</a></p>
-<p>Deploy the flow and go to <a href="http://127.0.0.1:1880/ui">Web UI</a></p>
+You can create a flow or import the flow i have created from my <a href="https://github.com/AshutoshGeek/MQTT-Python-Jetson-Nano/blob/main/node-red-flows.json">Github</a></p>
+<p>The flow publishes 0 and 1 to the MQTT topic when the switch is turned ON or OFF.</p>
+<p>Deploy the flow and go to the dashboard UI <a href="http://127.0.0.1:1880/ui">http://127.0.0.1:1880/ui</a></p>
 <h2 id="running-the-code">Running the code</h2>
 <p>Now run the mqtt_gpio.py<br>
 <code>python3 mqtt_gpio.py</code></p>
-<p>Now You can ON OFF the LED from the Web dashboard.</p>
+<p>Now You can ON OFF the LED from the Web dashboard UI.</p>
 <h2 id="youtube-video">Youtube Video</h2>
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
   <iframe src="https://www.youtube.com/embed/WPmzoYwXj00" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
 </div>
 
-<h2 id="source-code-and-node-red-flows">Source code and Node Red Flows</h2>
+<h2 id="source-code-and-node-red-flow">Source code and Node Red Flow</h2>
 <p><a href="https://github.com/AshutoshGeek/MQTT-Python-Jetson-Nano">https://github.com/AshutoshGeek/MQTT-Python-Jetson-Nano</a></p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://mosquitto.org/">Eclipse Mosquitto, Open source MQTT broker</a></li>
+<li><a href="https://mqtt.org/getting-started/">Learn about MQTT</a></li>
+<li><a href="http://www.steves-internet-guide.com/mqtt-works/">How MQTT Works -Beginners Guide</a></li>
+</ul>
 <h3 id="thank-you-for-reading-">Thank you for reading !!</h3>
 
     </div>
@@ -299,13 +310,22 @@ You can create a flow or export the flow i have created from my <a href="https:/
 </svg>
 </span>
     <span class="logo__text"
-      >hello friend</span
+      >/bin/bash</span
     >
     <span class="logo__cursor"></span>
   
 </a>
 
-      
+      <div class="copyright">
+        <span
+          >© 2021
+          <a href="https://twitter.com/ashu_ishere/" target="_blank" rel="noopener">ashu_ishere</a></span
+        >
+        <span
+          >TryHackMe Profile</span
+        >
+        <script src="https://tryhackme.com/badge/147471"></script>
+      </div>
     
   </div>
 </footer>
